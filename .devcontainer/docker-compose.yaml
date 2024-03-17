@@ -1,0 +1,27 @@
+version: '3.9'
+
+services:
+  api:
+    build: 
+      context: ../
+      dockerfile: docker/go/Dockerfile
+    ports:
+      - 8080:8080
+      - 8888:8888
+    environment:
+      - PORT=8080
+      - DATABASE_URL=db
+    depends_on:
+      - db
+  db:
+    build: 
+      context: ../
+      dockerfile: docker/postgres/Dockerfile
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB_: aimee_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: adminadmin
+    ports:
+      - "5432:5432"
