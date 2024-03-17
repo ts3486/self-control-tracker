@@ -2,6 +2,8 @@ package main
 
 import (
 	"aimeechat_api/database"
+	"aimeechat_api/routes"
+
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -13,10 +15,12 @@ func main() {
 	if err != nil {
         log.Fatal("Error loading .env file")
     }
+	r := gin.Default()
 	database.Connect()
 	defer database.DB.Close()
 
-	r := gin.Default()
+	routes.RegisterRoutes(r, database.DB)
+	
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "pong",
