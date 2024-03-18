@@ -1,12 +1,16 @@
 FROM golang
 
-RUN mkdir /aimeechat_api
-
-ADD . /aimeechat_api
-
 WORKDIR /aimeechat_api
 
-RUN go build -o main main
+COPY . .
+
+RUN go mod download
+
+COPY *.go ./
+
+RUN go build -o main
+
+# RUN CGO_ENABLED=0 GOOS=linux go build -o /aimeechat_api
 
 EXPOSE 8080
-CMD [ "/aimeechat_api/main" ]
+CMD [ "/main" ]

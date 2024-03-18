@@ -4,7 +4,28 @@
 	"name": "Existing Dockerfile",
 	"service": "aimeechat_api",
 	"workspaceFolder": "/aimeechat_api/",
-	"dockerComposeFile": "docker-compose.yml"
+	"dockerComposeFile": "docker-compose.yml",
+	"customizations": {
+        "vscode": {
+            // Add the IDs of extensions you want installed when the container is created.
+            "extensions": [
+                "ms-azuretools.vscode-docker",
+                "github.copilot"
+            ],
+            // Set *default* container specific settings.json values on container create.
+            "settings": {
+                "terminal.integrated.defaultProfile.linux": "bash",
+                "terminal.integrated.profiles.linux": {
+                    "bash": {
+                        "path": "bin/bash",
+                        "args": [
+                            "-l"
+                        ]
+                    }
+                }
+            }
+        }
+    }
 	// "features": {
 	// 	"ghcr.io/devcontainers/features/go:1": {}
 	// }
