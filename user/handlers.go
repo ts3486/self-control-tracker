@@ -1,41 +1,14 @@
 package user
 
 import (
+	userMethods "aimeechat_api/user/methods"
+	"context"
 	"database/sql"
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
-
-// CreateUser inserts a new user into the database.
-func CreateUser(db *sql.DB, u User) error {
-    const query = `INSERT INTO users (username, email, password) VALUES ($1, $2, $3)`
-    _, err := db.Exec(query, u.Username, u.Email, u.Password)
-    return err
-}
-
-// GetUser retrieves a single user by ID.
-func GetUser(db *sql.DB, id int64) (User, error) {
-    const query = `SELECT id, username, email FROM users WHERE id = $1`
-    var u User
-    err := db.QueryRow(query, id).Scan(&u.ID, &u.Username, &u.Email)
-    return u, err
-}
-
-// UpdateUser updates a user's information.
-func UpdateUser(db *sql.DB, u User) error {
-    const query = `UPDATE users SET username = $1, email = $2, password = $3 WHERE id = $4`
-    _, err := db.Exec(query, u.Username, u.Email, u.Password, u.ID)
-    return err
-}
-
-// DeleteUser removes a user from the database.
-func DeleteUser(db *sql.DB, id int64) error {
-    const query = `DELETE FROM users WHERE id = $1`
-    _, err := db.Exec(query, id)
-    return err
-}
 
 //HANDLERS
 func CreateUserHandler(db *sql.DB) gin.HandlerFunc {
@@ -45,7 +18,15 @@ func CreateUserHandler(db *sql.DB) gin.HandlerFunc {
             c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
             return
         }
-        if err := CreateUser(db, u); err != nil {
+        q := userMethods.New(db) // create a new Queries instance
+
+        params := userMethods.CreateUserParams{
+            Username: u.Username,
+            Email:    u.Email,
+            Password: u.Password,
+        }
+
+        if err := q.CreateUser(context.Background(), params); err != nil {
             c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
             return
         }
@@ -60,7 +41,10 @@ func GetUserHandler(db *sql.DB) gin.HandlerFunc {
             c.JSON(http.StatusBadRequest, gin.H{"error": "invalid user id"})
             return
         }
-        u, err := GetUser(db, id)
+
+        q := userMethods.New(db) // create a new Queries instance
+
+        u, err := q.GetUser(c.Request.Context(), int32(id))
         if err != nil {
             c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
             return
@@ -71,12 +55,15 @@ func GetUserHandler(db *sql.DB) gin.HandlerFunc {
 
 func UpdateUserHandler(db *sql.DB) gin.HandlerFunc {
     return func(c *gin.Context) {
-        var u User
+        var u userMethods.UpdateUserParams
         if err := c.ShouldBindJSON(&u); err != nil {
             c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
             return
         }
-        if err := UpdateUser(db, u); err != nil {
+
+        q := userMethods.New(db)
+
+        if err := q.UpdateUser(c.Request.Context(), u); err != nil {
             c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
             return
         }
@@ -91,7 +78,10 @@ func DeleteUserHandler(db *sql.DB) gin.HandlerFunc {
             c.JSON(http.StatusBadRequest, gin.H{"error": "invalid user id"})
             return
         }
-        if err := DeleteUser(db, id); err != nil {
+
+        q := userMethods.New(db)
+
+        if err := q.DeleteUser(c.Request.Context(), int32(id)); err != nil {
             c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
             return
         }

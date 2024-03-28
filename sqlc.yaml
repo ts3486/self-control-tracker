@@ -1,0 +1,10 @@
+version: "2"
+sql:
+  - engine: "postgresql"
+    queries: "./user/queries"
+    schema: "./user/schemas"
+    gen:
+      go:
+        package: "userMethods"
+        out: "./user/methods"
+        sql_package: "database/sql"
