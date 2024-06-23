@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"aimeechat_api/user"
 	"database/sql"
+	"sct-api/user"
 
 	"github.com/gin-gonic/gin"
 )

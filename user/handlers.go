@@ -1,10 +1,10 @@
 package user
 
 import (
-	userMethods "aimeechat_api/user/methods"
 	"context"
 	"database/sql"
 	"net/http"
+	userMethods "sct-api/user/methods"
 	"strconv"
 
 	"github.com/gin-gonic/gin"

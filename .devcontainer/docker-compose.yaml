@@ -20,7 +20,7 @@ services:
     image: postgres
     restart: always
     environment:
-      POSTGRES_DB_: aimee_db
+      POSTGRES_DB_: sct-db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: adminadmin
     ports:

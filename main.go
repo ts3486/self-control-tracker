@@ -1,8 +1,8 @@
 package main
 
 import (
-	"aimeechat_api/database"
-	"aimeechat_api/routes"
+	"sct-api/database"
+	"sct-api/routes"
 
 	"log"
 

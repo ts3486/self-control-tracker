@@ -1,4 +1,4 @@
-module aimeechat_api
+module sct-api
 
 go 1.22.0
 
